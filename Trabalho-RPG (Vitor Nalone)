@@ -1,0 +1,97 @@
+import random
+
+class Character:
+    def __init__(self, name: str, health: int, attack: int):
+        self.name = name
+        self.health = health
+        self.attack = attack
+
+    def attack_enemy(self, enemy):
+        critical_chance = random.randint(1,10)
+        damage = self.attack
+    # Definindo o dano crítico
+        if self.name == player_name and critical_chance <= 2: # 20% de chance
+            damage +=10
+            print(f" Você atingiu o monstro com dano crítico {self.name} causou + 15 de dano")
+        enemy.health -= damage
+        print(f" {self.name} atacou {enemy.name} causando {damage} de dano.")
+
+
+    def is_alive(self):
+        return self.health > 0
+
+    def run_away(self):
+        return random.random() < 0.5  # 50% de chance de fugir
+
+# Usando dicionário para itens
+items = {
+    "potion": ("cura", 20),
+    "shield": ("defesa", 5)
+}
+
+# Usando lista e tupla para o inventário
+inventory = ["potion", "shield", "potion"]
+
+# Usando set para habilidades únicas
+skills = {"Golpe Rápido", "Defesa Rápida"}
+
+# Usando bitwise para criar um sistema de pontos
+level_points = 0b0011  # 3 pontos iniciais
+
+# Criando personagens
+player_name = input("Digite o nome do seu personagem: ")
+player = Character(player_name, 100, 15)
+monster = Character("Monstro", 80, 10)
+
+print("Jogo Iniciado!")
+
+# Jogo simples: jogador ataca o monstro até que um deles morra
+# Definindo a função de fuga
+while player.is_alive() and monster.is_alive():
+    print("\n--- Sua vez ---")
+    action = input("Digite 'a' para atacar ou 'i' para usar item ou 'r' para fugir: ").lower()
+
+    if action == 'a':
+        player.attack_enemy(monster)
+
+    elif action == 'i' and inventory:
+        item = inventory.pop(0)
+        effect, value = items.get(item, (None, 0))
+        if effect == "cura":
+            player.health += value
+            print(f"Você usou uma {item} e recuperou {value} pontos de vida.")
+        elif effect == "defesa":
+            player.attack += value
+            print(f"Você usou um {item} e ganhou {value} pontos de ataque.")
+        else:
+            print("Item desconhecido.")
+
+    elif action == 'r':
+        if player.run_away():
+            print("Você fugiu da batalha!")
+            break
+        else:
+            print("Você não conseguiu fugir.")
+
+    elif action == 'i' and not inventory:
+        print("Você não tem mais itens para usar.")
+
+    else:
+        print("Ação inválida. Tente novamente.")
+
+    if monster.is_alive():
+        print("\n--- Turno do Monstro ---")
+        monster.attack_enemy(player)
+
+# Verifica o resultado
+if monster.is_alive():
+    print("O monstro venceu!")
+elif player.is_alive():
+    print("Você venceu!")
+else:
+    print("Você perdeu.")
+
+# Mostrando uso de bitwise
+print("\nPontos de nível inicial:", bin(level_points))
+level_points = level_points << 1  # Ganha o dobro de pontos
+print("Pontos de nível após bônus:", bin(level_points))
